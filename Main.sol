@@ -11,6 +11,7 @@ contract CrowdFundingPlatform {
         string title;
         string startupDescription;
         uint goal;
+        uint currentgoal;
         uint startAt;
         uint endsAt;
         uint countPledges;
@@ -26,6 +27,7 @@ contract CrowdFundingPlatform {
         founder: payable(owner),
         title: 'null',
         startupDescription: 'null',
+        currentgoal: 0,
         goal: 0,
         startAt: 0,
         endsAt: 100000,
@@ -53,6 +55,7 @@ contract CrowdFundingPlatform {
             founder: payable(owner),
             title: _title,
             startupDescription: _startupDescription,
+            currentgoal: 0,
             goal: _goal,
             startAt: block.timestamp,
             endsAt: block.timestamp + duration,
@@ -81,6 +84,7 @@ contract CrowdFundingPlatform {
         require(block.timestamp < newStartup.endsAt, "compaign ended!");
         uint cPrice = getPriceForPledge(_index);
         require(msg.value >= cPrice, "not enough funds!");
+        newStartup.currentgoal += msg.value;
         payments[msg.sender] += msg.value;
     }
 
@@ -91,7 +95,7 @@ contract CrowdFundingPlatform {
 
     function refund() external payable{
         require(block.timestamp > newStartup.endsAt, "compaign not ended!");
+        require(newStartup.currentgoal < newStartup.goal);
         payable(msg.sender).transfer(payments[msg.sender]);
     }
-
 }
