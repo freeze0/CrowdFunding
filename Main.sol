@@ -91,6 +91,7 @@ contract CrowdFundingPlatform {
     function supportProject() external payable{
         require(block.timestamp < newStartup.endsAt, "compaign ended!");
         payments[msg.sender] += msg.value;
+        newStartup.currentgoal += msg.value;
     }
 
     function refund() external payable{
@@ -98,4 +99,5 @@ contract CrowdFundingPlatform {
         require(newStartup.currentgoal < newStartup.goal);
         payable(msg.sender).transfer(payments[msg.sender]);
     }
+
 }
